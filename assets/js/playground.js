@@ -440,7 +440,6 @@ class HovEffectStretch extends HovEffect{
       let currentImg = this.items[0].img;
       let currentImgSrc = currentImg.src;
       const targetEls = document.querySelectorAll('.js-hovList');
-      const targetElPos = targetEls[0].clientHeight;
       const playground = document.querySelector('.js-itemsWrapper');
       let fragLine = innerHeight / 2 + 1;//canvasの下にピッタリつくライン
 
