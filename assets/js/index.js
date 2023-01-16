@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import * as THREE from "//unpkg.com/three@0.148.0/build/three.module.js";
 import { GetScrollNum } from "./_class.js";
 import { ScrollFunction } from "./_class.js";
 import { ScrollObserver } from "./_class.js";

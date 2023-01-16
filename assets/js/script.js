@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import * as THREE from "//unpkg.com/three@0.148.0/build/three.module.js";
 import { ScrollObserver } from "./_class.js";
 import { StickAnime } from "./_class.js";
 
