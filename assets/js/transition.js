@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import * as THREE from "//unpkg.com/three@0.148.0/build/three.module.js";
 
 const loadCanvas = document.getElementById('js-transitionCanvas');
 const loader = document.querySelector('.js-transition');
