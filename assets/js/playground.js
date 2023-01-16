@@ -491,7 +491,7 @@ class HovEffectStretch extends HovEffect{
 
           targetPos = target.getBoundingClientRect().top;
           //targetの画面上部からの距離がcanvasの下の位置と一致した時
-          if(targetPos <= fragLine + 10 && targetPos >=  fragLine - 10 ){
+          if(targetPos <= fragLine + 20 && targetPos >=  fragLine - 20 ){
             targetClass.add('is-view');
             currentImg = target.querySelector('img');
             currentImgSrc = currentImg.src;
