@@ -439,6 +439,8 @@ class HovEffectStretch extends HovEffect{
       this.uniforms.uAlpha.value = 1.0;
       let currentImg = this.items[0].img;
       let currentImgSrc = currentImg.src;
+      let shrinkRate = 1.3;
+      let imageRatio = (currentImg.naturalWidth / currentImg.naturalHeight) * shrinkRate ;
       const targetEls = document.querySelectorAll('.js-hovList');
       const playground = document.querySelector('.js-itemsWrapper');
       let fragLine = innerHeight / 2 + 1;//canvasの下にピッタリつくライン
@@ -478,10 +480,7 @@ class HovEffectStretch extends HovEffect{
         targetEls.forEach(target=>{
           let targetPos = target.getBoundingClientRect().top;
           let targetClass = target.classList;
-          
-          let shrinkRate = 1.3;//縮小率
-          
-          let imageRatio = (currentImg.naturalWidth / currentImg.naturalHeight) * shrinkRate ;
+          imageRatio = (currentImg.naturalWidth / currentImg.naturalHeight) * shrinkRate ;
           
           this.scale = new THREE.Vector3(imageRatio,shrinkRate,1.0);
           this.plane.scale.copy(this.scale);
@@ -494,17 +493,25 @@ class HovEffectStretch extends HovEffect{
             targetClass.add('is-view');
             currentImg = target.querySelector('img');
             currentImgSrc = currentImg.src;
-            this.uniforms.uTexture.value = new THREE.TextureLoader().load(currentImgSrc);
-            imageRatio = (currentImg.naturalWidth / currentImg.naturalHeight) * shrinkRate ;
-            this.scale = new THREE.Vector3(imageRatio,shrinkRate,1.0);
-            this.plane.scale.copy(this.scale);
+              // this.uniforms.uTexture.value = new THREE.TextureLoader().load(currentImgSrc);
+              // imageRatio = (currentImg.naturalWidth / currentImg.naturalHeight) * shrinkRate ;
+              // this.scale = new THREE.Vector3(imageRatio,shrinkRate,1.0);
+              // this.plane.scale.copy(this.scale);
           }else{
             if(targetClass.contains('is-view') === true){
               targetClass.remove('is-view');
             }
           }
         }.bind(this));
-      });
+        });
+      playground.addEventListener('scroll', function () {
+        setTimeout(() => {
+          this.uniforms.uTexture.value = new THREE.TextureLoader().load(currentImgSrc);
+          imageRatio = (currentImg.naturalWidth / currentImg.naturalHeight) * shrinkRate ;
+              this.scale = new THREE.Vector3(imageRatio,shrinkRate,1.0);
+              this.plane.scale.copy(this.scale);
+          },500)
+      }.bind(this));
     };
 
     updateMobile(offset) {
