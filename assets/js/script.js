@@ -1,11 +1,5 @@
 import * as THREE from "three";
-import { FontLoader } from "https://unpkg.com/three@0.148.0/examples/jsm/loaders/FontLoader.js";
-import { TextGeometry } from "https://unpkg.com/three@0.148.0/examples/jsm/geometries/TextGeometry.js";
-import { GetScrollNum } from "./_class.js";
-import { ScrollFunction } from "./_class.js";
 import { ScrollObserver } from "./_class.js";
-import { SplitTextAnimation } from "./_class.js";
-import { SplitText } from "./_class.js";
 import { StickAnime } from "./_class.js";
 
 let scrollY; //スクロール量格納用
@@ -159,111 +153,101 @@ function mediaReload(){
 // ---------------------------------------------------------------
 // three.js
 
+
 function playgroundLink() {
-  let text;
-const canvas = document.getElementById('js-playgroundCanvas');
-// Scene
+  const canvas = document.getElementById("js-playgroundCanvas");
+  // Scene
   const scene = new THREE.Scene();
   if (!canvas) return;
-const sizes = {
-  width: window.innerWidth,
-  height: window.innerHeight / 3,
-}
-const camera = new THREE.PerspectiveCamera(
-  70,
-  sizes.width / sizes.height,
-  0.001,
-  10000
-);
-if (mediaFlag === "pcL" || mediaFlag === "pc") {
-  camera.position.set(0, 0, 0.5);
-} else {
-  camera.position.set(0, 0, 0.7);
-}
-scene.add(camera);
-canvas.addEventListener('mouseover', function () {
-  gsap.to(camera.position, {
-    z: 0.45,
-    duration: 0.4,
-    onComplete: () => {
-      camera.updateProjectionMatrix();
-    }
-  })
-});
-canvas.addEventListener('mouseout', function () {
-  gsap.to(camera.position, {
-    z: 0.5,
-    duration: 0.4,
-    onComplete: () => {
-      camera.updateProjectionMatrix();
-    }
-  })
-});
-
-//Fonts
-const fontLoader = new FontLoader();
-// fontLoader.load("assets/fonts/droid/droid_sans_bold.typeface.json", (font) => {
-fontLoader.load("assets/fonts/optimer_regular.typeface.json", (font) => {
-  const textGeometry = new TextGeometry("PLAYGROUND", {
-    font: font,
-    size: 0.07,
-    height: 0.01,
-    curveSegments: 20,
-    bevelEnabled: true,
-    bevelThickness: 0.0001,
-    bevelSize: 0.000001,
-    bevelOffset: 0,
-    bevelSegments: 10,
-    letterSpacing: 200
+  const sizes = {
+    width: window.innerWidth,
+    height: window.innerHeight / 2,
+  };
+  const fov = 75,
+    aspect = sizes.width / sizes.height,
+    near = 0.1,
+    far = 3000;
+  const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+  camera.position.set(-1, 2, -3);
+  scene.add(camera);
+  if (mediaFlag === "pcL" || mediaFlag === "pc") {
+    camera.position.set(-1, 2, -3);
+  } else {
+    camera.position.set(-1, 2, -3.5);
+  }
+  scene.add(camera);
+  canvas.addEventListener("mouseover", function () {
+    gsap.to(camera.position, {
+      z: -2.6,
+      duration: 0.4,
+      onComplete: () => {
+        camera.updateProjectionMatrix();
+      },
+    });
   });
-  textGeometry.center();
+  canvas.addEventListener("mouseout", function () {
+    gsap.to(camera.position, {
+      z: -3,
+      duration: 0.4,
+      onComplete: () => {
+        camera.updateProjectionMatrix();
+      },
+    });
+  });
 
-  const textMaterial = new THREE.MeshNormalMaterial();
-  text = new THREE.Mesh(textGeometry, textMaterial);
-  text.position.set(0, 0, 0.3);
-  text.rotation.z = (Math.PI / 2) / 10;
-  scene.add(text);
-});
+  const light = new THREE.DirectionalLight(0xC9EBF2, 1);
+  const ambientLight = new THREE.AmbientLight(0xC9EBF2,1);
+  scene.add(light, ambientLight);
 
-// Renderer
-const renderer = new THREE.WebGLRenderer({
-  canvas:canvas,
-  alpha:true
-});
-renderer.setSize(sizes.width, sizes.height);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.setClearColor(0x000000,0);
+  //ジオメトリを定義
+  const geometry = new THREE.BoxGeometry(5, 2,1);
 
-// Animate
-let rotateX = 0;
-const animate = () => {
-  if (text !== undefined && scrollDir === "down") {
-    rotateX += 0.005;
-    text.rotation.x += 0.005;
-  } else if (text !== undefined && scrollDir === "up") {
-    rotateX -= 0.005;
-    text.rotation.x -= 0.005;
-  }
-  renderer.render(scene, camera);
-  window.requestAnimationFrame(animate);
-};
+  //マテリアルを定義
+  const material = new THREE.MeshToonMaterial({
+    map: new THREE.TextureLoader().load("./assets/images/playground.png"),
+  });
+  const cube = new THREE.Mesh(geometry, material);
+  camera.lookAt(cube.position);
+  scene.add(cube);
 
-window.addEventListener('scroll', function (e) {
-  scrollY = window.pageYOffset;
-  if (text !== undefined) {
-    text.rotation.x = rotateX + scrollY * 0.003;
-  }
-})
-
-window.addEventListener("resize", () => {
-  // Update sizes
-  sizes.width = window.innerWidth / 2;
-  sizes.height = window.innerHeight / 3;
-
-  // Update renderer
+  // Renderer
+  const renderer = new THREE.WebGLRenderer({
+    canvas: canvas,
+    alpha: true,
+  });
   renderer.setSize(sizes.width, sizes.height);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-});
-animate();
-}
+  renderer.setClearColor(0x000000,0);
 
+  // Animate
+  let rotateX = 0;
+  const animate = () => {
+    if (cube !== undefined && scrollDir === "down") {
+      rotateX += 0.005;
+      cube.rotation.x += 0.005;
+    } else if (cube !== undefined && scrollDir === "up") {
+      rotateX -= 0.005;
+      cube.rotation.x -= 0.005;
+    }
+    renderer.render(scene, camera);
+    window.requestAnimationFrame(animate);
+  };
+
+  window.addEventListener("scroll", function (e) {
+    scrollY = window.pageYOffset;
+    if (cube !== undefined) {
+      cube.rotation.x = rotateX + scrollY * 0.003;
+    }
+  });
+
+  window.addEventListener("resize", () => {
+    // Update sizes
+    sizes.width = window.innerWidth;
+    sizes.height = window.innerHeight / 2;
+
+    // Update renderer
+    renderer.setSize(sizes.width, sizes.height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  });
+  animate();
+}

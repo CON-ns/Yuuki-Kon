@@ -1,6 +1,4 @@
 import * as THREE from "three";
-import { FontLoader } from "https://unpkg.com/three@0.148.0/examples/jsm/loaders/FontLoader.js";
-import { TextGeometry } from "https://unpkg.com/three@0.148.0/examples/jsm/geometries/TextGeometry.js";
 
 let mediaQueryPCLarge, mediaQueryPC, mediaQueryTablet, mediaQueryMobile, mediaFlag; //メディアクエリ用変数
 let canvasHeight = innerHeight;
@@ -493,7 +491,7 @@ class HovEffectStretch extends HovEffect{
 
           targetPos = target.getBoundingClientRect().top;
           //targetの画面上部からの距離がcanvasの下の位置と一致した時
-          if(targetPos === fragLine || targetPos ===  fragLine - 0.5 || targetPos ===  fragLine - 1.0){
+          if(targetPos <= fragLine + 10 && targetPos >=  fragLine - 10 ){
             targetClass.add('is-view');
             currentImg = target.querySelector('img');
             currentImgSrc = currentImg.src;
