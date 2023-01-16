@@ -14,7 +14,7 @@ window.addEventListener('DOMContentLoaded', function () {
 function mvAnime() {
   const tl = gsap.timeline();
   tl.fromTo('.p-playground__item', {
-    y: 30,
+    y: 20,
     opacity: 0
   }, {
     opacity: 1,
